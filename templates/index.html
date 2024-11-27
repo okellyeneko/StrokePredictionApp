@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>This is a Stroke Prediction Dashboard.</h1>
+<a href="https://www.kaggle.com/datasets/fedesoriano/stroke-prediction-dataset?resource=download">Dataset source on Kaggle</a>
+<p>The features of this app allow you to explore the Stroke Prediction dataset. Use the custom querying feature or visualise the charts for age, gender, hypertension based data.</p>
+<div>
+    <ul class="links-list">
+        <li><a href="/gender">Gender</a> - View the stroke cases by gender.</li>
+        <li><a href="/age">Age Distribution</a> - Stroke cases by age groups.</li>
+        <li><a href="/hypertension">Hypertension</a> - Correlation between hypertension and stroke prediction.</li>
+        <li><a href="/custom">Custom Query</a> - Create your own SQL queries.</li>
+    </ul>
+</div>
+{% endblock %}

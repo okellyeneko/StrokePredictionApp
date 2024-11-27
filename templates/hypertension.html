@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Health Insights</h1>
+
+<div>
+    <h2>Stroke Cases by Hypertension</h2>
+    <canvas id="strokeHypertensionChart"></canvas>
+</div>
+
+<div>
+    <h2>Stroke Cases by Heart Disease</h2>
+    <canvas id="strokeHeartDiseaseChart"></canvas>
+</div>
+
+<div>
+    <h2>Stroke Cases by Marital Status</h2>
+    <canvas id="strokeMaritalStatusChart"></canvas>
+</div>
+
+<script src="/static/js/main.js"></script>
+<script>
+    async function renderHealthCharts() {
+        try {
+            const hypertensionData = await fetchData("/api/stroke-by-hypertension", {});
+            if (hypertensionData.length > 0) {
+                renderChart(
+                    "strokeHypertensionChart",
+                    "bar",
+                    hypertensionData.map(item => item.hypertension),
+                    hypertensionData.map(item => item.stroke_cases),
+                    "Stroke Cases by Hypertension"
+                );
+            }
+
+            const heartDiseaseData = await fetchData("/api/stroke-by-heart-disease", {});
+            if (heartDiseaseData.length > 0) {
+                renderChart(
+                    "strokeHeartDiseaseChart",
+                    "bar",
+                    heartDiseaseData.map(item => item.heart_disease),
+                    heartDiseaseData.map(item => item.stroke_cases),
+                    "Stroke Cases by Heart Disease"
+                );
+            }
+
+            const maritalStatusData = await fetchData("/api/stroke-by-marital-status", {});
+            if (maritalStatusData.length > 0) {
+                renderChart(
+                    "strokeMaritalStatusChart",
+                    "bar",
+                    maritalStatusData.map(item => item.ever_married),
+                    maritalStatusData.map(item => item.stroke_cases),
+                    "Stroke Cases by Marital Status"
+                );
+            }
+        } catch (err) {
+            console.error("Error rendering health charts:", err);
+        }
+    }
+
+    renderHealthCharts();
+</script>
+{% endblock %}

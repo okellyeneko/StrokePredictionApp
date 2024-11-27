@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Gender Insights</h1>
+
+<div>
+    <h2>Stroke Cases by Gender</h2>
+    <canvas id="genderChart"></canvas>
+</div>
+
+<div>
+    <h2>Average BMI by Gender</h2>
+    <canvas id="bmiChart"></canvas>
+</div>
+
+<div>
+    <h2>Average Glucose Level by Gender</h2>
+    <canvas id="glucoseChart"></canvas>
+</div>
+
+<script src="/static/js/main.js"></script>
+<script>
+    async function renderGenderCharts() {
+        try {
+            const genderData = await fetchData("/api/gender", {});
+            if (genderData.length > 0) {
+                renderChart(
+                    "genderChart",
+                    "bar",
+                    genderData.map(item => item.gender),
+                    genderData.map(item => item.stroke_cases),
+                    "Stroke Cases by Gender"
+                );
+            }
+
+            const bmiData = await fetchData("/api/bmi", {});
+            if (bmiData.length > 0) {
+                renderChart(
+                    "bmiChart",
+                    "bar",
+                    bmiData.map(item => item.gender),
+                    bmiData.map(item => item.avg_bmi),
+                    "Average BMI by Gender"
+                );
+            }
+
+            const glucoseData = await fetchData("/api/glucose", {});
+            if (glucoseData.length > 0) {
+                renderChart(
+                    "glucoseChart",
+                    "bar",
+                    glucoseData.map(item => item.gender),
+                    glucoseData.map(item => item.avg_glucose),
+                    "Average Glucose Level by Gender"
+                );
+            }
+        } catch (err) {
+            console.error("Error rendering gender charts:", err);
+        }
+    }
+
+    renderGenderCharts();
+</script>
+{% endblock %}

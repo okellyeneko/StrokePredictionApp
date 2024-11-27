@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Custom Query</h1>
+
+<div class="form-container">
+    <textarea id="customQueryInput">
+SELECT gender, COUNT(*) AS stroke_cases
+FROM `watchful-idea-425712-g6.stroke_dataset.stroke_table`
+WHERE stroke = 1
+GROUP BY gender;
+    </textarea>
+    <button id="executeQuery">Run Query</button>
+</div>
+
+<div id="customQueryResults">
+    <h2>Query Results</h2>
+    <table>
+        <thead id="resultsHeader"></thead>
+        <tbody id="resultsBody"></tbody>
+    </table>
+</div>
+
+<script src="/static/js/main.js"></script>
+<script>
+    document.getElementById("executeQuery").addEventListener("click", async () => {
+        const query = document.getElementById("customQueryInput").value;
+
+        try {
+            const results = await fetchData("/api/custom-query", { query });
+            if (results.error) {
+                alert(`Error: ${results.error}`);
+                return;
+            }
+
+            const header = document.getElementById("resultsHeader");
+            const body = document.getElementById("resultsBody");
+            header.innerHTML = ""; // Clear old headers
+            body.innerHTML = ""; // Clear old body
+
+            if (results.length > 0) {
+                const columns = Object.keys(results[0]);
+                const headerRow = document.createElement("tr");
+                columns.forEach(col => {
+                    const th = document.createElement("th");
+                    th.textContent = col;
+                    headerRow.appendChild(th);
+                });
+                header.appendChild(headerRow);
+
+                results.forEach(row => {
+                    const tr = document.createElement("tr");
+                    columns.forEach(col => {
+                        const td = document.createElement("td");
+                        td.textContent = row[col];
+                        tr.appendChild(td);
+                    });
+                    body.appendChild(tr);
+                });
+            } else {
+                alert("No results found for your query.");
+            }
+        } catch (err) {
+            console.error("Error executing custom query:", err);
+            alert("Failed to execute the query. Check console for details.");
+        }
+    });
+</script>
+{% endblock %}

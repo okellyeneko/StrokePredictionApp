@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Age Insights</h1>
+
+<div>
+    <h2>Age Distribution</h2>
+    <canvas id="ageDistributionChart"></canvas>
+</div>
+
+<div>
+    <h2>Stroke Cases by Age Group</h2>
+    <canvas id="strokeByAgeChart"></canvas>
+</div>
+
+<div>
+    <h2>Average BMI by Age Group</h2>
+    <canvas id="bmiByAgeChart"></canvas>
+</div>
+
+<div>
+    <h2>Average Glucose Level by Age Group</h2>
+    <canvas id="glucoseByAgeChart"></canvas>
+</div>
+
+<script src="/static/js/main.js"></script>
+<script>
+    async function renderAgeCharts() {
+        try {
+            const ageDistributionData = await fetchData("/api/age-distribution", {});
+            if (ageDistributionData.length > 0) {
+                renderChart(
+                    "ageDistributionChart",
+                    "bar",
+                    ageDistributionData.map(item => item.age_group),
+                    ageDistributionData.map(item => item.count),
+                    "Age Distribution"
+                );
+            }
+
+            const strokeByAgeData = await fetchData("/api/stroke-by-age", {});
+            if (strokeByAgeData.length > 0) {
+                renderChart(
+                    "strokeByAgeChart",
+                    "bar",
+                    strokeByAgeData.map(item => item.age_group),
+                    strokeByAgeData.map(item => item.stroke_cases),
+                    "Stroke Cases by Age Group"
+                );
+            }
+
+            const bmiByAgeData = await fetchData("/api/bmi-by-age", {});
+            if (bmiByAgeData.length > 0) {
+                renderChart(
+                    "bmiByAgeChart",
+                    "bar",
+                    bmiByAgeData.map(item => item.age_group),
+                    bmiByAgeData.map(item => item.avg_bmi),
+                    "Average BMI by Age Group"
+                );
+            }
+
+            const glucoseByAgeData = await fetchData("/api/glucose-by-age", {});
+            if (glucoseByAgeData.length > 0) {
+                renderChart(
+                    "glucoseByAgeChart",
+                    "bar",
+                    glucoseByAgeData.map(item => item.age_group),
+                    glucoseByAgeData.map(item => item.avg_glucose),
+                    "Average Glucose Level by Age Group"
+                );
+            }
+        } catch (err) {
+            console.error("Error rendering age charts:", err);
+        }
+    }
+
+    renderAgeCharts();
+</script>
+{% endblock %}
